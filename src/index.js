@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.use('/uploads', express.static(UPLOAD_DIR));
+app.use('/api/uploads', express.static(UPLOAD_DIR));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
@@ -73,7 +73,7 @@ app.post('/api/games', upload.single('image'), async (req, res) => {
       if (s3Base) {
         imageUrl = `${s3Base.replace(/\/$/, '')}/${filename}`;
       } else {
-        imageUrl = `/uploads/${filename}`;
+        imageUrl = `/api/uploads/${filename}`;
       }
     }
     let videosJson = null;
