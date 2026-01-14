@@ -7,6 +7,14 @@ require('dotenv').config();
 
 const db = require('./db');
 
+console.log({
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE,
+});
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -56,7 +64,18 @@ app.post('/api/games', upload.single('image'), async (req, res) => {
     const { name, description, videoUrls } = req.body;
     if (!name) return res.status(400).json({ error: 'Name is required' });
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    // Simulate S3 by returning a full URL when S3_BASE_URL is set.
+    // Example: S3_BASE_URL=https://s3.local/bucket-name
+    let imageUrl = null;
+    if (req.file) {
+      const filename = req.file.filename;
+      const s3Base = process.env.S3_BASE_URL && String(process.env.S3_BASE_URL).trim();
+      if (s3Base) {
+        imageUrl = `${s3Base.replace(/\/$/, '')}/${filename}`;
+      } else {
+        imageUrl = `/uploads/${filename}`;
+      }
+    }
     let videosJson = null;
     if (videoUrls) {
       try {
