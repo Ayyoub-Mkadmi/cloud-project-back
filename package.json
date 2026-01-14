@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon --watch src --exec node src/index.js",
-    "migrate": "psql $PGDATABASE -f db/migrations/create_games_table.sql"
+    "migrate": "node src/run_migrations.js",
+    "migrate:psql": "psql $PGDATABASE -f db/migrations/create_games_table.sql"
   },
   "keywords": [],
   "author": "",

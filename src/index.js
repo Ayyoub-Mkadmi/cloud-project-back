@@ -100,4 +100,19 @@ app.post('/api/games', upload.single('image'), async (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+
+// Graceful shutdown
+const shutdown = (signal) => {
+  console.log(`\n${signal} received. Closing HTTP server and DB connections...`);
+  server.close(() => {
+    console.log('HTTP server closed.');
+    db.pool.end(() => {
+      console.log('Database pool closed.');
+      process.exit(0);
+    });
+  });
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
