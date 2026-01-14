@@ -33,7 +33,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// Serve uploads at /api/uploads (primary route)
 app.use('/api/uploads', express.static(UPLOAD_DIR));
+
+// Legacy fallback for old /uploads URLs in database
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
