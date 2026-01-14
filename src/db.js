@@ -9,6 +9,13 @@ const config = {
   port: process.env.DB_PORT ? Number(process.env.DB_PORT) : (process.env.PGPORT ? Number(process.env.PGPORT) : 5432),
 };
 
+const useSsl = (process.env.DB_SSL === 'true') || (process.env.PGSSLMODE === 'require');
+if (useSsl) {
+  config.ssl = {
+    rejectUnauthorized: process.env.SSL_REJECT_UNAUTHORIZED === 'true'
+  };
+}
+
 const pool = new Pool(config);
 
 // Test connection on startup and log informative messages
