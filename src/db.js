@@ -18,7 +18,7 @@ if (useSsl) {
 
 const pool = new Pool(config);
 
-// Test connection on startup and log informative messages
+// Test connection on startup and log informative messages (non-blocking)
 (async function testConnection() {
   try {
     const client = await pool.connect();
@@ -30,6 +30,7 @@ const pool = new Pool(config);
     }
   } catch (err) {
     console.error('Postgres connection error:', err.message || err);
+    console.warn('Server will continue but database operations will fail until connection is established');
   }
 })();
 
